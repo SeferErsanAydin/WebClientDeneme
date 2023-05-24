@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Category CRUD</title>
+
+    <link href="../Content/bootstrap.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-3.7.0.js"></script>
+    <script src="../Scripts/bootstrap.js"></script>
+
+    <style>
+        .genislik {
+            width: 300px;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+
+                ID => <input type="text" class="form-control genislik" id="txtID" placeholder="Type ID" />
+                Name => <input type="text" class="form-control genislik" id="txtName" placeholder="Category Name" />
+                Description => <input type="text" class="form-control genislik" id="txtDesc" placeholder="Description" />
+
+
+                <hr />
+
+                <input type="button" id="btnAll" class="btn btn-info" value="Get Categories" />
+                <input type="button" id="btnID" class="btn btn-primary" value="Get Category" />
+
+                <hr />
+
+                <input type="button" id="btnAdd" class="btn btn-info" value="Add Category" />
+                <input type="button" id="btnDelete" class="btn btn-danger" value="Delete Category" />
+                <input type="button" id="btnUpdate" class="btn btn-warning" value="Update Category" />
+
+                <hr />
+
+                <input type="text" id="txtSearch" class="form-control genislik" placeholder="Search" />
+            </div>
+
+            <div class="col-6">
+                <table id="tab1" class="table table-hover">
+                    <tr>
+                        <th>Category ID</th>
+                        <th>Category Name</th>
+                        <th>Category Description</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!--https://localhost:44326/ https://localhost:44326/-->
+
+    <script>
+
+        function ControlHeader() {
+            //this function will remove all table rows (<tr></tr>) but the first one inside our table
+            $("#tab1").find("tr:gt(0)").remove();
+        }
+
+        function BringDataList(dataList) {
+            ControlHeader();
+            $.each(dataList, function (data) {
+                $("#tab1").append("<tr> <td>" + data.ID + " </td> <td>" + data.Name + " </td> <td> " + data.Description + "</td> </tr>");
+            })
+        }
+
+        function BringData(data) {
+            ControlHeader();
+            $("#tab1").append("<tr> <td>" + data.ID + " </td> <td>" + data.Name + " </td> <td> " + data.Description + "</td> </tr>");
+        }
+
+        $(function () {
+
+            //Listing all categories
+            $("#btnAll").click(function () {
+                $.ajax({
+                    url: "https://localhost:44326/api/Category/ListCategories",
+                    type: "Get",
+                    success: function (data) {
+                        BringDataList(data);
+                    }
+                })
+            })
+
+            //getting one category through ID
+            $("#btnID").click(function () {
+                $.ajax({
+                    url: "https://localhost:44326/api/Category/GetCategory/",
+                    data: { id: $("#txtID").val() },
+                    type: "Get",
+                    success: function (data) {
+                        BringData(data);
+                    }
+                })
+            })
+
+            //adding category
+            $("#btnAdd").click(function () {
+                $.ajax({
+                    url: "https://localhost:44326/api/Category/AddCategory/",
+                    type: "Post",
+                    data: { CategoryName: $("#txtName").val(), Description: $("#txtDesc").val() },
+                    success: function (data) {
+                        BringDataList(data);
+                    }
+                })
+            })
+
+            //deleting category
+            $("#btnDelete").click(function () {
+                $.ajax({
+                    url: "https://localhost:44326/api/Category/RemoveCategory/" +$("#txtID").val(),
+                    type: "Delete",
+                    success: function (data) {
+                        BringDataList(data)
+                    }
+                })
+            })
+
+            //updating category
+            $("#btnUpdate").click(function () {
+                $.ajax({
+                    url: "https://localhost:44326/api/Category/UpdateCategory/",
+                    type: "Put",
+                    data: {CategoryID:$("#txtID").val(), CategoryName: $("#txtName").val(), Description: $("#txtDesc").val() },
+                    success: function (data) {
+                        BringDataList(data);
+                    }
+                })
+            })
+
+            //category search
+            $("#txtSearch").keyup(function () {
+                $.ajax({
+                    url: "https://localhost:44326/api/Category/SearchCategory/",
+                    data: { item: $(this).val() },
+                    type: "Get",
+                    success: function (data) {
+                        BringDataList(data)
+                    }
+                })
+            })  
+        })
+
+    </script>
+
+
+</body>
+</html>
