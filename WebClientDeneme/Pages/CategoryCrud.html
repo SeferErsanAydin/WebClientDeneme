@@ -61,11 +61,12 @@
         function ControlHeader() {
             //this function will remove all table rows (<tr></tr>) but the first one inside our table
             $("#tab1").find("tr:gt(0)").remove();
+            //$("#tab1").find("tr:first").remove();
         }
 
         function BringDataList(dataList) {
             ControlHeader();
-            $.each(dataList, function (data) {
+            $.each(dataList, function (key,data) {
                 $("#tab1").append("<tr> <td>" + data.ID + " </td> <td>" + data.Name + " </td> <td> " + data.Description + "</td> </tr>");
             })
         }
